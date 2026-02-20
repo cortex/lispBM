@@ -1,22 +1,25 @@
-{ build32 ? false
-, supportedSystems
+{
+  build32 ? false,
+  supportedSystems,
 
-, self
-, nix-filter
+  self,
+  nix-filter,
 
-, multiStdenv
-, readline
-, libpng
-, gcc_multi
-, SDL2
-, SDL2_image
-, pkg-config
+  multiStdenv,
+  readline,
+  libpng,
+  gcc_multi,
+  SDL2,
+  SDL2_image,
+  freetype,
+  pkg-config,
 }:
 
 let
-  makeTarget = if build32 then "sdl" else "sdl64";
+  makeTarget = if build32 then "repl" else "repl";
   name = if build32 then "lbm" else "lbm64";
-in multiStdenv.mkDerivation {
+in
+multiStdenv.mkDerivation {
   pname = name;
   # IDK what pattern should be used to get ahold of the version number...
   version = self.shortRev or self.rev or self.dirtyShortRev or "unknown";
@@ -30,10 +33,7 @@ in multiStdenv.mkDerivation {
     root = self;
     include = with nix-filter.lib; [
       "src"
-      (and
-        "repl"
-        (or_ isDirectory (or_ (matchExt "c") (matchExt "h")))
-      )
+      (and "repl" (or_ isDirectory (or_ (matchExt "c") (matchExt "h"))))
       "include"
       "platform"
       "repl/Makefile"
@@ -43,8 +43,7 @@ in multiStdenv.mkDerivation {
 
   buildPhase = ''
     cd repl/
-
-    make ${makeTarget}
+    make ${makeTarget} FEATURES="sdl freetype"
   '';
   installPhase = ''
     mkdir -p $out/bin
@@ -57,6 +56,7 @@ in multiStdenv.mkDerivation {
     libpng
     SDL2
     SDL2_image
+    freetype
   ];
 
   nativeBuildInputs = [

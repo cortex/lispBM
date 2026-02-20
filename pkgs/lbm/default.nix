@@ -1,9 +1,10 @@
-{ self
-, supportedSystems
-, nix-filter
+{
+  self,
+  supportedSystems,
+  nix-filter,
 
-, callPackage
-, pkgsi686Linux
+  callPackage,
+  pkgsi686Linux,
 }:
 
 rec {
@@ -15,6 +16,7 @@ rec {
     libpng = pkgsi686Linux.libpng;
     SDL2 = pkgsi686Linux.SDL2;
     SDL2_image = pkgsi686Linux.SDL2_image;
+    freetype = pkgsi686Linux.freetype;
   };
   doc = callPackage ./doc { inherit self supportedSystems nix-filter; };
   c-doc = callPackage ./c-doc { inherit self supportedSystems nix-filter; };

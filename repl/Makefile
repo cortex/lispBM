@@ -67,7 +67,7 @@ endif
 
 # Use SDL
 ifneq (,$(filter sdl,$(FEATURES)))
-	CCFLAGS += -DWITH_SDL -I/usr/include/SDL2
+	CCFLAGS += -DWITH_SDL $(shell pkg-config --cflags-only-I sdl2 SDL2_image)
 	LDFLAGS += -lSDL2 -lSDL2_image
 	REPL_SRC += lbm_sdl.c
 endif
@@ -81,7 +81,7 @@ endif
 
 # Use freetype
 ifneq (,$(filter freetype, $(FEATURES)))
-	CCFLAGS += -DLBM_TTF_USE_FREETYPE -I/usr/include/freetype2
+	CCFLAGS += -DLBM_TTF_USE_FREETYPE $(shell pkg-config --cflags-only-I freetype)
 	LDFLAGS += -lfreetype
 	REPL_SRC := $(filter-out %/schrift.c,$(REPL_SRC))
 	REPL_SRC += $(LISPBM)/src/extensions/ttf_backend_freetype.c
@@ -147,5 +147,3 @@ clean_coverage:
 
 $(FEATURE_FILE): FORCE
 	@echo "$(FEATURES)" | cmp -s - $@ || echo "$(FEATURES)" > $@
-
-
