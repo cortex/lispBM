@@ -18,6 +18,7 @@
 let
   makeTarget = if build32 then "repl" else "repl";
   name = if build32 then "lbm" else "lbm64";
+  features = if build32 then "" else "64";
 in
 multiStdenv.mkDerivation {
   pname = name;
@@ -43,7 +44,7 @@ multiStdenv.mkDerivation {
 
   buildPhase = ''
     cd repl/
-    make ${makeTarget} FEATURES="sdl freetype"
+    make ${makeTarget} FEATURES="${features} sdl freetype"
   '';
   installPhase = ''
     mkdir -p $out/bin
